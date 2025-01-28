@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "712459874838",
+    "project_id": "locker-management-system-48e69",
+    "storage_bucket": "locker-management-system-48e69.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:712459874838:android:c998a6a9076137e9bf3b37",
+        "android_client_info": {
+          "package_name": "com.example.lms"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJHFizPPa36_C-fIy16aD39OrQDI11bis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

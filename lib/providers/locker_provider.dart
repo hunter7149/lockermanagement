@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../services/locker_service.dart';
 import '../models/locker.dart';
@@ -10,6 +11,7 @@ class LockerProvider with ChangeNotifier {
   List<Locker> get lockers => _lockers;
 
   Future<void> fetchLockers() async {
+
     _lockers = await _lockerService.getLockers();
     notifyListeners();
   }

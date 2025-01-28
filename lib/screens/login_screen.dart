@@ -38,9 +38,9 @@ class LoginScreen extends StatelessWidget {
                       Provider.of<AuthProvider>(context, listen: false)
                           .userRole;
 
-                  if (userRole == 'Admin') {
+                  if (userRole == 'admin') {
                     Navigator.pushReplacementNamed(context, AppRoutes.admin);
-                  } else if (userRole == 'Student') {
+                  } else if (userRole == 'student') {
                     Navigator.pushReplacementNamed(context, AppRoutes.student);
                   } else {
                     Navigator.pushReplacementNamed(context, AppRoutes.visitor);
