@@ -1,30 +1,28 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthProvider with ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  bool _isLoggedIn = false;
-  String _userRole = '';
+  Future<String> login(String email, String password) async {
+    try {
+      UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(email: email, password: password);
 
-  bool get isLoggedIn => _isLoggedIn;
-  String get userRole => _userRole;
+      // Fetch user data from Firestore
+      DocumentSnapshot userDoc =
+          await _firestore.collection('users').doc(userCredential.user!.uid).get();
 
-  Future<void> login(String email, String password) async {
-    final user = await _authService.login(email, password);
-    if (user != null) {
-      _userRole = await _authService.getUserRole(user.uid);
-      _isLoggedIn = true;
-      notifyListeners();
-    } else {
-      throw Exception("Login failed");
+      if (userDoc.exists) {
+        String role = userDoc['role'];
+        return role; // Return the role to use in your UI
+      } else {
+        throw Exception("User data not found!");
+      }
+    } catch (e) {
+      throw Exception("Login failed: $e");
     }
-  }
-
-  Future<void> logout() async {
-    await _authService.logout();
-    _isLoggedIn = false;
-    _userRole = '';
-    notifyListeners();
   }
 }

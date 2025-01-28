@@ -1,46 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/locker_provider.dart';
-import '../models/locker.dart';
+import 'package:lms/controller/report_controller.dart';
+import 'package:lms/screens/report_screen.dart';
+
 
 class AdminDashboard extends StatelessWidget {
+  const AdminDashboard({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final lockerProvider = Provider.of<LockerProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
-        title: Text("Admin Dashboard"),
+        title: const Text('Admin Dashboard'),
       ),
-      body: FutureBuilder(
-        future: lockerProvider.fetchLockers(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return ListView.builder(
-            itemCount: lockerProvider.lockers.length,
-            itemBuilder: (context, index) {
-              final locker = lockerProvider.lockers[index];
-              return ListTile(
-                title: Text("Locker ID: ${locker.id}"),
-                subtitle: Text("Status: ${locker.status}"),
-                trailing: DropdownButton<String>(
-                  value: locker.status,
-                  items: ["Available", "Booked", "Under Maintenance"]
-                      .map((status) => DropdownMenuItem(
-                            value: status,
-                            child: Text(status),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    lockerProvider.updateLockerStatus(locker.id, value!);
-                  },
-                ),
-              );
-            },
-          );
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AddReportScreen()),
+                );
+              },
+              child: const Text('Add Report'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () async {
+                String reportID = 'exampleReportID'; // Replace with dynamic ID
+                // ReportController().navigateToReportScreen(context, reportID);
+              },
+              child: const Text('View Report'),
+            ),
+          ],
+        ),
       ),
     );
   }
