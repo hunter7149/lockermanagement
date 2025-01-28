@@ -6,8 +6,8 @@ class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<User?> login(String email, String password) async {
-    UserCredential userCredential =
-        await _auth.signInWithEmailAndPassword(email: email, password: password);
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
     return userCredential.user;
   }
 
@@ -18,8 +18,8 @@ class AuthService {
     required String role,
     String? phone,
   }) async {
-    UserCredential userCredential =
-        await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email, password: password);
     String userID = userCredential.user!.uid;
 
     await _firestore.collection('users').doc(userID).set({
@@ -31,9 +31,15 @@ class AuthService {
     });
 
     if (role == 'student') {
-      await _firestore.collection('students').doc(userID).set({'userID': userID});
+      await _firestore
+          .collection('students')
+          .doc(userID)
+          .set({'userID': userID});
     } else if (role == 'visitor') {
-      await _firestore.collection('visitors').doc(userID).set({'userID': userID});
+      await _firestore
+          .collection('visitors')
+          .doc(userID)
+          .set({'userID': userID});
     } else if (role == 'admin') {
       await _firestore.collection('admins').doc(userID).set({'userID': userID});
     }
@@ -45,7 +51,8 @@ class AuthService {
 
   Future<Map<String, dynamic>?> getUser(String userID) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection('users').doc(userID).get();
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(userID).get();
       if (doc.exists) {
         return doc.data() as Map<String, dynamic>;
       }
@@ -61,5 +68,39 @@ class AuthService {
       return await getUser(user.uid);
     }
     return null;
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection('users').get();
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> removeUser(String userID) async {
+    try {
+      await _firestore.collection('users').doc(userID).delete();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> sendNotification(String userID, String message) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userID)
+          .collection('notifications')
+          .add({
+        'message': message,
+        'timestamp': DateTime.now(),
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

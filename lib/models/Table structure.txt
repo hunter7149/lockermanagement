@@ -1,0 +1,58 @@
+users (Collection)
+  ├── {userID} (Document)
+      ├── username: String
+      ├── email: String
+      ├── phone: Integer
+      ├── role: Enum(admin, visitor, student)
+      ├── status: Enum(active, block, suspend)
+      ├── notifications (Subcollection)
+          ├── {notificationID} (Document)
+              ├── message: String
+              ├── timestamp: DateTime
+
+students (Collection)
+  ├── {academicID} (Document)
+      ├── userID: String (Reference to users)
+      ├── graduationDate: Date
+
+admins (Collection)
+  ├── {adminID} (Document)
+      ├── userID: String (Reference to users)
+      ├── rolePermissions: String
+
+visitors (Collection)
+  ├── {visitorID} (Document)
+      ├── userID: String (Reference to users)
+      ├── contactNumber: Integer
+
+reservations (Collection)
+  ├── {reservationID} (Document)
+      ├── startDate: Date
+      ├── endDate: Date
+      ├── lockerID: String (Reference to lockers)
+      ├── userID: String (Reference to users)
+
+keys (Collection)
+  ├── {keyID} (Document)
+      ├── lockerID: String (Reference to lockers)
+      ├── status: Enum(available, assigned, lost)
+
+lockers (Collection)
+  ├── {lockerID} (Document)
+      ├── buildingID: String (Reference to buildings)
+      ├── location: String
+      ├── status: Enum(available, reserved, overdue)
+      ├── type: Enum(temporary, permanent)
+
+buildings (Collection)
+  ├── {buildingID} (Document)
+      ├── name: String
+      ├── location: String
+      ├── total_locker: Integer
+
+reports (Collection)
+  ├── {reportID} (Document)
+      ├── totalReservations: Integer
+      ├── lockerUsageRate: Decimal
+      ├── generationDate: DateTime
+      ├── adminID: String (Reference to admins)

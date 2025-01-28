@@ -22,4 +22,13 @@ class Locker {
       type: data['type'] ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'location': location,
+      'status': status,
+      'type': type,
+    };
+  }
 }

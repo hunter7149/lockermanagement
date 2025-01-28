@@ -15,4 +15,31 @@ class LockerProvider with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> addLocker(Locker locker) async {
+    try {
+      await LockerService().addLocker(locker);
+      fetchLockers();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> updateLocker(String lockerID, Map<String, dynamic> data) async {
+    try {
+      await LockerService().updateLocker(lockerID, data);
+      fetchLockers();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> deleteLocker(String lockerID) async {
+    try {
+      await LockerService().deleteLocker(lockerID);
+      fetchLockers();
+    } catch (error) {
+      throw error;
+    }
+  }
 }

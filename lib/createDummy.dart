@@ -5,9 +5,18 @@ final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 Future<void> addDummyData() async {
   try {
     // Adding Dummy Users
-    await _addUserData(userId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2', email: 'admin@admin.com', role: 'admin');
-    await _addUserData(userId: 'untS73kxgceP3fZ9AkjhwXR8Vwv1', email: 'emonnatbd@gmail.com', role: 'student');
-    await _addUserData(userId: 'Hi2rkVGykDT1mItWIgN0zNOcjdG2', email: 'visitor@visitor.com', role: 'visitor');
+    await _addUserData(
+        userId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2',
+        email: 'admin@admin.com',
+        role: 'admin');
+    await _addUserData(
+        userId: 'untS73kxgceP3fZ9AkjhwXR8Vwv1',
+        email: 'emonnatbd@gmail.com',
+        role: 'student');
+    await _addUserData(
+        userId: 'Hi2rkVGykDT1mItWIgN0zNOcjdG2',
+        email: 'visitor@visitor.com',
+        role: 'visitor');
 
     // Adding Dummy Admin, Student, and Visitor Data
     await _addAdminData(adminId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2');
@@ -16,12 +25,16 @@ Future<void> addDummyData() async {
 
     // Adding Dummy Lockers, Buildings, Reservations, and Keys
     await _addBuildingData(buildingId: 'building1');
-    await _addLockerData(lockerId: 'locker1', buildingId: 'building1');
-    await _addReservationData(reservationId: 'reservation1', userId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2', lockerId: 'locker1');
+    await addLockerData(lockerId: 'locker1', buildingId: 'building1');
+    await _addReservationData(
+        reservationId: 'reservation1',
+        userId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2',
+        lockerId: 'locker1');
     await _addKeyData(keyId: 'key1', lockerId: 'locker1');
 
     // Adding Dummy Reports
-    await _addReportData(reportId: 'report1', adminId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2');
+    await _addReportData(
+        reportId: 'report1', adminId: 'gVPA6N1OZfU80mJ3yLJXlSIwaNP2');
 
     print('Dummy data successfully added.');
   } catch (e) {
@@ -41,7 +54,7 @@ Future<void> _addUserData({
       'username': 'Dummy $role User',
       'email': email,
       'phone': 1234567890,
-      'role': role,  // Enum for admin, student, visitor
+      'role': role, // Enum for admin, student, visitor
       'status': 'active', // Enum for active, block, suspend
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
@@ -114,13 +127,14 @@ Future<void> _addBuildingData({required String buildingId}) async {
 }
 
 // Add Locker Data
-Future<void> _addLockerData({required String lockerId, required String buildingId}) async {
+Future<void> addLockerData(
+    {required String lockerId, required String buildingId}) async {
   try {
     await _firestore.collection('lockers').doc(lockerId).set({
       'buildingID': buildingId,
       'location': 'Ground Floor',
-      'status': 'available',  // Enum for available, reserved, overdue
-      'type': 'permanent',  // Enum for temporary, permanent
+      'status': 'available', // Enum for available, reserved, overdue
+      'type': 'permanent', // Enum for temporary, permanent
       'created_at': FieldValue.serverTimestamp(),
       'updated_at': FieldValue.serverTimestamp(),
     });
@@ -152,7 +166,8 @@ Future<void> _addReservationData({
 }
 
 // Add Key Data
-Future<void> _addKeyData({required String keyId, required String lockerId}) async {
+Future<void> _addKeyData(
+    {required String keyId, required String lockerId}) async {
   try {
     await _firestore.collection('keys').doc(keyId).set({
       'lockerID': lockerId,
@@ -167,11 +182,12 @@ Future<void> _addKeyData({required String keyId, required String lockerId}) asyn
 }
 
 // Add Report Data
-Future<void> _addReportData({required String reportId, required String adminId}) async {
+Future<void> _addReportData(
+    {required String reportId, required String adminId}) async {
   try {
     await _firestore.collection('reports').doc(reportId).set({
       'totalReservations': 10,
-      'lockerUsageRate': 0.8,  // Example: 80% usage
+      'lockerUsageRate': 0.8, // Example: 80% usage
       'generationDate': FieldValue.serverTimestamp(),
       'adminID': adminId,
       'created_at': FieldValue.serverTimestamp(),
