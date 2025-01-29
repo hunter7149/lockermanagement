@@ -8,6 +8,7 @@ class AuthProvider with ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   List<Map<String, dynamic>> _users = [];
+  String? _userType;
 
   List<Map<String, dynamic>> get users => _users;
 
@@ -37,6 +38,32 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<void> addUser({
+    required String email,
+    required String password,
+    required String name,
+    required String role,
+  }) async {
+    try {
+      await AuthService().addUser(email, password, name, role);
+      fetchAllUsers();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Future<void> updateUser({
+    required String userID,
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      await AuthService().updateUser(userID, data);
+      fetchAllUsers();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   Future<String> login(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -61,5 +88,26 @@ class AuthProvider with ChangeNotifier {
 
   String? getUserId() {
     return _auth.currentUser?.uid;
+  }
+
+  Future<String?> getUserType() async {
+    try {
+      String userId = getUserId()!;
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(userId).get();
+      if (userDoc.exists) {
+        _userType = userDoc['role'];
+        return _userType;
+      } else {
+        throw Exception("User data not found!");
+      }
+    } catch (e) {
+      throw Exception("Failed to get user type: $e");
+    }
+  }
+
+  // Method to set user type (e.g., during login)
+  void setUserType(String userType) {
+    _userType = userType;
+    notifyListeners();
   }
 }

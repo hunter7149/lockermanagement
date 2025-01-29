@@ -10,14 +10,19 @@ class ReservationScreen extends StatefulWidget {
 
 class _ReservationScreenState extends State<ReservationScreen> {
   String? _selectedLockerID;
+  String? _userType; // Add user type to differentiate between students and visitors
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ReservationProvider>(context, listen: false)
-          .fetchAvailableLockers();
-    });
+    _initializeData();
+  }
+
+  void _initializeData() async {
+    var auth = Provider.of<AuthProvider>(context, listen: false);
+    _userType = await auth.getUserType();
+    Provider.of<ReservationProvider>(context, listen: false)
+        .fetchAvailableLockers();
   }
 
   @override
@@ -104,12 +109,12 @@ class _ReservationScreenState extends State<ReservationScreen> {
                       }
                       var auth =
                           Provider.of<AuthProvider>(context, listen: false);
-
                       await reservationProvider.reserveLocker(
                         userID: auth.getUserId()!,
                         lockerID: _selectedLockerID!,
                         startDate: reservationProvider.startDate!,
                         endDate: reservationProvider.endDate!,
+                        userType: _userType!, // Pass user type for reservation
                       );
 
                       ScaffoldMessenger.of(context).showSnackBar(

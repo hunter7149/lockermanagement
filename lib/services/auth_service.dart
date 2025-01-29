@@ -61,6 +61,20 @@ class AuthService {
       throw Exception("Failed to fetch user: $e");
     }
   }
+  Future<String> getUserType(String userID) async {
+    try {
+      DocumentSnapshot doc =
+          await _firestore.collection('users').doc(userID).get();
+      if (doc.exists) {
+        return doc['role'];
+      }
+      else {
+        return "User not found";
+      }
+    } catch (e) {
+      throw Exception("Failed to fetch user: $e");
+    }
+  }
 
   Future<Map<String, dynamic>?> getCurrentUser() async {
     User? user = _auth.currentUser;
@@ -102,5 +116,31 @@ class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  Future<void> addUser(String email, String password, String name, String role) async {
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    String userID = userCredential.user!.uid;
+    Timestamp timestamp = Timestamp.now();
+
+    await _firestore.collection('users').doc(userID).set({
+      'email': email,
+      'name': name,
+      'role': role,
+      'phone': '1234567890', // Default phone number
+      'created_at': timestamp,
+      'updated_at': timestamp,
+      'status': 'active',
+      'userID': userID,
+      'username': name, // Default username
+    });
+  }
+
+  Future<void> updateUser(String userID, Map<String, dynamic> data) async {
+    await _firestore.collection('users').doc(userID).update(data);
   }
 }

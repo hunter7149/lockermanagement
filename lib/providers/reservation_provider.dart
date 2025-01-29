@@ -30,7 +30,10 @@ class ReservationProvider with ChangeNotifier {
     required String lockerID,
     required DateTime startDate,
     required DateTime endDate,
+    required String userType,
   }) async {
+    // Implement logic to handle different user types and booking expiration
+    // For example, set different expiration times for students and visitors
     try {
       await ReservationService().createReservation(
         userID: userID,
@@ -91,4 +94,20 @@ class ReservationProvider with ChangeNotifier {
       throw error;
     }
   }
+
+  Future<void> autoCancelExpiredReservations() async {
+    try {
+      await ReservationService().autoCancelExpiredReservations();
+    } catch (error) {
+      // Handle error
+    }
+  }
+
+  // Method to auto-cancel expired bookings
+  void autoCancelExpiredBookings() {
+    // Implement logic to check and cancel expired bookings
+  }
+
+  // Method to fetch active reservations
+ 
 }
